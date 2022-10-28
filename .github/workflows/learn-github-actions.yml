@@ -14,6 +14,7 @@ jobs:
   greeting-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-actions-hello@v1
+      - name: Test Javascript Hello Action
+        uses: adeloyedeji/github-actions-hello@v1.0
         with:
           who-to-greet: 'Frank'
