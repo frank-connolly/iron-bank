@@ -11,7 +11,7 @@ jobs:
           node-version: '14'
       - run: npm install -g bats
       - run: bats -v
-  greeting-job:
+  greeting-job: # This is taken from the marketplace - actually throws a few deprecation warnings
     runs-on: ubuntu-latest
     steps:
       - name: Test Javascript Hello Action
