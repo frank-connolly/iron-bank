@@ -14,6 +14,14 @@ public class Workout {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WorkoutSet> workoutSets;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public List<WorkoutSet> getWorkoutSets() {
         return workoutSets;
     }
