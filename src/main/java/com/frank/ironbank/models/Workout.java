@@ -1,4 +1,4 @@
-package com.frank.ironbank;
+package com.frank.ironbank.models;
 
 import jakarta.persistence.*;
 
