@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class WorkoutSet {
+@Table(name = "workouts")
+public class WorkoutEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,10 +20,6 @@ public class WorkoutSet {
     private ExerciseType exerciseType;
 
     private String notes;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getId() {
         return id;
