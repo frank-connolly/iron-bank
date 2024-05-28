@@ -1,4 +1,4 @@
-package com.frank.ironbank.models;
+package com.frank.ironbank;
 
 public enum ExerciseType {
     BENCH_PRESS,
