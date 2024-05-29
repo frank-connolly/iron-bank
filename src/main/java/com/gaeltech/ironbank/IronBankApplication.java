@@ -1,4 +1,4 @@
-package com.frank.ironbank;
+package com.gaeltech.ironbank;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

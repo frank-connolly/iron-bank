@@ -1,4 +1,4 @@
-package com.frank.ironbank;
+package com.gaeltech.ironbank;
 
 import java.time.LocalDateTime;
 
