@@ -1,12 +1,14 @@
 package com.gaeltech.ironbank;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WorkoutService {
 
-    Logger log = org.slf4j.LoggerFactory.getLogger(WorkoutService.class);
+    Logger log = LoggerFactory.getLogger(WorkoutService.class);
 
     private final WorkoutRepository repository;
 
@@ -14,6 +16,7 @@ public class WorkoutService {
         this.repository = repository;
     }
 
+    @Transactional
     public WorkoutDto createWorkout(WorkoutDto workoutDto) {
         log.info("Creating workout");
         var workoutEntity = WorkoutMapper.mapToEntity(workoutDto);
@@ -33,11 +36,13 @@ public class WorkoutService {
         return WorkoutMapper.mapToDtos(workoutEntities);
     }
 
+    @Transactional
     public void deleteWorkout(Long id) {
         log.info("Deleting workout by id: {}", id);
         repository.deleteById(id);
     }
 
+    @Transactional
     public WorkoutDto updateWorkout(Long id, WorkoutDto workoutDto) {
         log.info("Updating workout by id: {}", id);
         var workoutEntity = repository.findById(id).orElseThrow();
