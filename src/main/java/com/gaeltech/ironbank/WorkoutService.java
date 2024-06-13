@@ -5,6 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class WorkoutService {
 
@@ -33,6 +36,12 @@ public class WorkoutService {
     public Iterable<WorkoutDto> getAllWorkouts() {
         log.info("Getting all workouts");
         var workoutEntities = repository.findAll();
+        return WorkoutMapper.mapToDtos(workoutEntities);
+    }
+
+    public List<WorkoutDto> searchWorkouts(LocalDateTime startTime, LocalDateTime endTime, String text) {
+        log.info("Searching workouts with startTime: {}, endTime: {}, text: {}", startTime, endTime, text);
+        var workoutEntities = repository.searchWorkouts(startTime, endTime, text);
         return WorkoutMapper.mapToDtos(workoutEntities);
     }
 
