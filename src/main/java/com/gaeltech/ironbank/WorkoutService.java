@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -39,10 +41,11 @@ public class WorkoutService {
         return WorkoutMapper.mapToDtos(workoutEntities);
     }
 
-    public List<WorkoutDto> searchWorkouts(LocalDateTime startTime, LocalDateTime endTime, String text) {
-        log.info("Searching workouts with startTime: {}, endTime: {}, text: {}", startTime, endTime, text);
-        var workoutEntities = repository.searchWorkouts(startTime, endTime, text);
-        return WorkoutMapper.mapToDtos(workoutEntities);
+    public List<WorkoutDto> searchWorkouts(LocalDate startDate, LocalDate endDate, String text) {
+        LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+        List<WorkoutEntity> entities = repository.searchWorkouts(startDateTime, endDateTime, text);
+        return WorkoutMapper.mapToDtos(entities);
     }
 
     @Transactional
