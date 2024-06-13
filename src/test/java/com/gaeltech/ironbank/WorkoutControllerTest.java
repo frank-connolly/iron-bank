@@ -97,23 +97,23 @@ class WorkoutControllerTest {
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', nullValues = "null", value = {
-            "2024-05-30T08:00:00|2024-05-30T09:00:00|bench|1",
-            "2024-05-30T08:00:00|null|bench|1",
-            "null|2024-05-30T09:00:00|bench|1",
+            "2024-05-30|2024-05-30|bench|1",
+            "2024-05-30|null|bench|1",
+            "null|2024-05-30|bench|1",
             "null|null|bench|1",
             "null|null|null|2",
-            "2024-05-30T08:00:00|2024-05-30T09:00:00|null|1",
-            "2024-05-30T08:00:00|null|null|2",
-            "null|2024-05-30T09:00:00|null|1"
+            "2024-05-30|2024-05-30|null|2",
+            "2024-05-30|null|null|2",
+            "null|2024-05-30|null|2"
     })
-    void searchWorkoutsTest(String startTimeStr, String endTimeStr, String text, int expectedResults) throws Exception {
+    void searchWorkoutsTest(String startDateStr, String endDateStr, String text, int expectedResults) throws Exception {
         String url = "/workouts/search?";
 
-        if (startTimeStr != null) {
-            url += "startTime=" + startTimeStr + "&";
+        if (startDateStr != null) {
+            url += "startDate=" + startDateStr + "&";
         }
-        if (endTimeStr != null) {
-            url += "endTime=" + endTimeStr + "&";
+        if (endDateStr != null) {
+            url += "endDate=" + endDateStr + "&";
         }
         if (text != null) {
             url += "text=" + text;
@@ -132,6 +132,7 @@ class WorkoutControllerTest {
 
         assertThat(workouts).hasSize(expectedResults);
     }
+
 
     @Test
     void deleteWorkout() throws Exception {

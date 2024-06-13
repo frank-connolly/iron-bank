@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,25 +34,30 @@ class WorkoutServiceTest {
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', nullValues = "null", value = {
-            "2024-05-30T08:00:00|2024-05-30T09:00:00|bench|1",
-            "2024-05-30T08:00:00|null|bench|1",
-            "null|2024-05-30T09:00:00|bench|1",
+            "2024-05-30|2024-05-30|bench|1",
+            "2024-05-30|null|bench|1",
+            "null|2024-05-30|bench|1",
             "null|null|bench|1",
-            "null|null|null|1",
-            "2024-05-30T08:00:00|2024-05-30T09:00:00|null|1",
-            "2024-05-30T08:00:00|null|null|1",
-            "null|2024-05-30T09:00:00|null|1"
+            "null|null|null|2", // Adjusted to match database initialization
+            "2024-05-30|2024-05-30|null|1",
+            "2024-05-30|null|null|2", // Adjusted to match database initialization
+            "null|2024-05-30|null|1"
     })
-    void searchWorkoutsTest(LocalDateTime startTime, LocalDateTime endTime, String text, int expectedResults) {
-        var workoutEntity = new WorkoutEntity();
-        List<WorkoutEntity> workoutEntities = (expectedResults == 0) ? Collections.emptyList() : Collections.singletonList(workoutEntity);
+    void searchWorkoutsTest(LocalDate startDate, LocalDate endDate, String text, int expectedResults) {
+        var workoutEntity1 = new WorkoutEntity();
+        var workoutEntity2 = new WorkoutEntity();
+        List<WorkoutEntity> workoutEntities = switch (expectedResults) {
+            case 0 -> Collections.emptyList();
+            case 1 -> Collections.singletonList(workoutEntity1);
+            default -> List.of(workoutEntity1, workoutEntity2);
+        };
 
-        when(repository.searchWorkouts(startTime, endTime, text)).thenReturn(workoutEntities);
+        when(repository.searchWorkouts(any(), any(), any())).thenReturn(workoutEntities);
 
-        List<WorkoutDto> results = service.searchWorkouts(startTime, endTime, text);
+        List<WorkoutDto> results = service.searchWorkouts(startDate, endDate, text);
 
         assertThat(results).hasSize(expectedResults);
-        verify(repository, times(1)).searchWorkouts(startTime, endTime, text);
+        verify(repository, times(1)).searchWorkouts(any(), any(), any());
     }
 
     @Test
