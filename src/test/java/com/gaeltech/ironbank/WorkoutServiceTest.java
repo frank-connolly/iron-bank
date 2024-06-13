@@ -2,12 +2,16 @@ package com.gaeltech.ironbank;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +29,29 @@ class WorkoutServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         service = new WorkoutService(repository);
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', nullValues = "null", value = {
+            "2024-05-30T08:00:00|2024-05-30T09:00:00|bench|1",
+            "2024-05-30T08:00:00|null|bench|1",
+            "null|2024-05-30T09:00:00|bench|1",
+            "null|null|bench|1",
+            "null|null|null|1",
+            "2024-05-30T08:00:00|2024-05-30T09:00:00|null|1",
+            "2024-05-30T08:00:00|null|null|1",
+            "null|2024-05-30T09:00:00|null|1"
+    })
+    void searchWorkoutsTest(LocalDateTime startTime, LocalDateTime endTime, String text, int expectedResults) {
+        var workoutEntity = new WorkoutEntity();
+        List<WorkoutEntity> workoutEntities = (expectedResults == 0) ? Collections.emptyList() : Collections.singletonList(workoutEntity);
+
+        when(repository.searchWorkouts(startTime, endTime, text)).thenReturn(workoutEntities);
+
+        List<WorkoutDto> results = service.searchWorkouts(startTime, endTime, text);
+
+        assertThat(results).hasSize(expectedResults);
+        verify(repository, times(1)).searchWorkouts(startTime, endTime, text);
     }
 
     @Test

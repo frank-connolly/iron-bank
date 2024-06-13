@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/workouts")
 public class WorkoutController {
@@ -34,6 +36,13 @@ public class WorkoutController {
         log.info("Getting all workouts");
         return service.getAllWorkouts();
     }
+
+    @GetMapping("/search")
+    public List<WorkoutDto> searchWorkouts(@ModelAttribute WorkoutSearchRequest searchRequest) {
+        log.info("Searching workouts");
+        return service.searchWorkouts(searchRequest.startTime(), searchRequest.endTime(), searchRequest.text());
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteWorkout(@PathVariable Long id) {

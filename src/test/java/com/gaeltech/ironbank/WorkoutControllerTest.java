@@ -2,6 +2,8 @@ package com.gaeltech.ironbank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,6 +93,44 @@ class WorkoutControllerTest {
         mockMvc.perform(get("/workouts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', nullValues = "null", value = {
+            "2024-05-30T08:00:00|2024-05-30T09:00:00|bench|1",
+            "2024-05-30T08:00:00|null|bench|1",
+            "null|2024-05-30T09:00:00|bench|1",
+            "null|null|bench|1",
+            "null|null|null|2",
+            "2024-05-30T08:00:00|2024-05-30T09:00:00|null|1",
+            "2024-05-30T08:00:00|null|null|2",
+            "null|2024-05-30T09:00:00|null|1"
+    })
+    void searchWorkoutsTest(String startTimeStr, String endTimeStr, String text, int expectedResults) throws Exception {
+        String url = "/workouts/search?";
+
+        if (startTimeStr != null) {
+            url += "startTime=" + startTimeStr + "&";
+        }
+        if (endTimeStr != null) {
+            url += "endTime=" + endTimeStr + "&";
+        }
+        if (text != null) {
+            url += "text=" + text;
+        }
+
+        url = url.endsWith("&") ? url.substring(0, url.length() - 1) : url;
+
+        String response = mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(expectedResults))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        WorkoutDto[] workouts = objectMapper.readValue(response, WorkoutDto[].class);
+
+        assertThat(workouts).hasSize(expectedResults);
     }
 
     @Test
