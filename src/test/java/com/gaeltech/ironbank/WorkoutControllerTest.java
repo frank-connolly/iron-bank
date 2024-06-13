@@ -97,14 +97,14 @@ class WorkoutControllerTest {
 
     @ParameterizedTest
     @CsvSource(delimiter = '|', nullValues = "null", value = {
-            "2024-05-30|2024-05-30|bench|1",
-            "2024-05-30|null|bench|1",
-            "null|2024-05-30|bench|1",
-            "null|null|bench|1",
-            "null|null|null|2",
-            "2024-05-30|2024-05-30|null|2",
-            "2024-05-30|null|null|2",
-            "null|2024-05-30|null|2"
+            "2024-03-01|2024-03-01|bench|1",  // Only 1 workout on 2024-03-01 with BENCH_PRESS
+            "2024-03-01|null|bench|2",       // 2 workouts with BENCH_PRESS
+            "null|2024-03-01|bench|1",       // Only 1 workout on or before 2024-03-01 with BENCH_PRESS
+            "null|null|bench|2",             // 2 workouts with BENCH_PRESS
+            "null|null|null|25",             // All workouts should be returned
+            "2024-03-01|2024-03-31|null|14", // All workouts in March
+            "2024-03-01|null|null|25",       // All workouts from 2024-03-01 onwards
+            "null|2024-04-30|null|25"        // All workouts up to 2024-04-30
     })
     void searchWorkoutsTest(String startDateStr, String endDateStr, String text, int expectedResults) throws Exception {
         String url = "/workouts/search?";
@@ -132,6 +132,7 @@ class WorkoutControllerTest {
 
         assertThat(workouts).hasSize(expectedResults);
     }
+
 
 
     @Test
