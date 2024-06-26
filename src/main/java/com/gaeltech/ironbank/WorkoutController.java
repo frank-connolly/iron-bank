@@ -38,8 +38,9 @@ public class WorkoutController {
     }
 
     @GetMapping("/search")
-    public List<WorkoutDto> searchWorkouts(@ModelAttribute WorkoutSearchRequest searchRequest) {
-        return service.searchWorkouts(searchRequest.startDate(), searchRequest.endDate(), searchRequest.text());
+    public List<WorkoutDto> searchWorkouts(@Valid @ModelAttribute WorkoutSearchRequest searchRequest) {
+        log.info("Searching workouts");
+        return service.searchWorkouts(searchRequest.getStartDate(), searchRequest.getEndDate(), searchRequest.getText());
     }
 
     @DeleteMapping("/{id}")
